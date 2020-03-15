@@ -1,12 +1,13 @@
 package main
 
 import (
-	"fmt"
-	"github.com/labstack/gommon/log"
-	"net/http"
-	"io/ioutil"
 	"encoding/json"
+	"fmt"
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
+	"github.com/labstack/gommon/log"
+	"io/ioutil"
+	"net/http"
 )
 
 type Animal struct {
@@ -92,11 +93,22 @@ func addHamster(c echo.Context) error {
 
 }
 
+func mainAdmin(c echo.Context) error {
+	return c.String(http.StatusOK, "You're on the secret admin page")
+}
 
 func main() {
 	fmt.Println("Welcome to the server")
 
 	e := echo.New()
+
+	g := e.Group("/admin")
+
+	g.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: "[${time_rfc3339}] ${status} ${method} ${host}${path} ${latency_human}" + "\n",
+	}))
+
+	g.GET("/main", mainAdmin)
 
 	e.GET("/", start)
 	e.GET("/cats/:data", getCats)
