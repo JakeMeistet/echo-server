@@ -1,0 +1,22 @@
+package main
+
+import (
+	"fmt"
+	"net/http"
+	"github.com/labstack/echo"
+)
+
+func start(c echo.Context) error {
+	return c.String(http.StatusOK, "Hello from the website")
+}
+
+func main() {
+	fmt.Println("Welcome to the server")
+
+	e := echo.New()
+
+	e.GET("/", start)
+
+	e.Start(":8000")
+}
+
